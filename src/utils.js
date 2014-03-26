@@ -45,7 +45,7 @@ var utils = (function () {
 		el.removeEventListener(type, fn, !!capture);
 	};
 
-	me.momentum = function (current, start, time, lowerMargin, wrapperSize, deceleration) {
+	me.momentum = function (current, start, time, lowerMargin, upperMargin, wrapperSize, deceleration) {
 		var distance = current - start,
 			speed = Math.abs(distance) / time,
 			destination,
@@ -60,8 +60,8 @@ var utils = (function () {
 			destination = wrapperSize ? lowerMargin - ( wrapperSize / 2.5 * ( speed / 8 ) ) : lowerMargin;
 			distance = Math.abs(destination - current);
 			duration = distance / speed;
-		} else if ( destination > 0 ) {
-			destination = wrapperSize ? wrapperSize / 2.5 * ( speed / 8 ) : 0;
+		} else if ( destination > upperMargin ) {
+			destination = wrapperSize ? upperMargin + ( wrapperSize / 2.5 * ( speed / 8 ) ) : upperMargin;
 			distance = Math.abs(current) + destination;
 			duration = distance / speed;
 		}

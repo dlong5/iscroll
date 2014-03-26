@@ -1,3 +1,10 @@
+<h3 id="customizations">Customizations from the original</h3>
+
+***key acceleration config*** Key acceleration was too slow, so I've added a new config value `keyAcceleration` to enable faster key scrolling.
+
+***custom scroll bounds*** We need to be able to inject content into the beginning of the list and not lose our place as well as add padding to the beginning and end of the list. StartX and Y values were capped at 0 and didn't help. If you set customScrollBounds to true, you'll need to set minScrollX/Y and maxScrollX/Y and call refresh any time the values change.
+
+
 <h1 id="intro">iScroll, smooth scrolling for the web</h1>
 
 iScroll is a high performance, small footprint, dependency free, multi-platform javascript scroller.

@@ -45,7 +45,7 @@
 			newY = snap ? this.currentPage.pageY : this.y,
 			now = utils.getTime(),
 			prevTime = this.keyTime || 0,
-			acceleration = 0.250,
+			acceleration = this.options.keyAcceleration || 0.250,
 			pos;
 
 		if ( this.options.useTransition && this.isInTransition ) {
@@ -101,16 +101,16 @@
 			return;
 		}
 
-		if ( newX > 0 ) {
-			newX = 0;
+		if ( newX > this.minScrollX ) {
+			newX = this.minScrollX;
 			this.keyAcceleration = 0;
 		} else if ( newX < this.maxScrollX ) {
 			newX = this.maxScrollX;
 			this.keyAcceleration = 0;
 		}
 
-		if ( newY > 0 ) {
-			newY = 0;
+		if ( newY > this.minScrollY ) {
+			newY = this.minScrollY;
 			this.keyAcceleration = 0;
 		} else if ( newY < this.maxScrollY ) {
 			newY = this.maxScrollY;

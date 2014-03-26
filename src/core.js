@@ -219,11 +219,11 @@ IScroll.prototype = {
 		newY = this.y + deltaY;
 
 		// Slow down if outside of the boundaries
-		if ( newX > 0 || newX < this.maxScrollX ) {
-			newX = this.options.bounce ? this.x + deltaX / 3 : newX > 0 ? 0 : this.maxScrollX;
+		if ( newX > this.minScrollX || newX < this.maxScrollX ) {
+			newX = this.options.bounce ? this.x + deltaX / 3 : newX > this.minScrollX ? this.minScrollX : this.maxScrollX;
 		}
-		if ( newY > 0 || newY < this.maxScrollY ) {
-			newY = this.options.bounce ? this.y + deltaY / 3 : newY > 0 ? 0 : this.maxScrollY;
+		if ( newY > this.minScrollY || newY < this.maxScrollY ) {
+			newY = this.options.bounce ? this.y + deltaY / 3 : newY > this.minScrollY ? this.minScrollY : this.maxScrollY;
 		}
 
 		this.directionX = deltaX > 0 ? -1 : deltaX < 0 ? 1 : 0;
@@ -301,8 +301,8 @@ IScroll.prototype = {
 
 		// start momentum animation if needed
 		if ( this.options.momentum && duration < 300 ) {
-			momentumX = this.hasHorizontalScroll ? utils.momentum(this.x, this.startX, duration, this.maxScrollX, this.options.bounce ? this.wrapperWidth : 0, this.options.deceleration) : { destination: newX, duration: 0 };
-			momentumY = this.hasVerticalScroll ? utils.momentum(this.y, this.startY, duration, this.maxScrollY, this.options.bounce ? this.wrapperHeight : 0, this.options.deceleration) : { destination: newY, duration: 0 };
+			momentumX = this.hasHorizontalScroll ? utils.momentum(this.x, this.startX, duration, this.maxScrollX, this.minScrollX, this.options.bounce ? this.wrapperWidth : 0, this.options.deceleration) : { destination: newX, duration: 0 };
+			momentumY = this.hasVerticalScroll ? utils.momentum(this.y, this.startY, duration, this.maxScrollY, this.minScrollY, this.options.bounce ? this.wrapperHeight : 0, this.options.deceleration) : { destination: newY, duration: 0 };
 			newX = momentumX.destination;
 			newY = momentumY.destination;
 			time = Math.max(momentumX.duration, momentumY.duration);
@@ -313,7 +313,7 @@ IScroll.prototype = {
 
 		if ( newX != this.x || newY != this.y ) {
 			// change easing function when scroller goes out of the boundaries
-			if ( newX > 0 || newX < this.maxScrollX || newY > 0 || newY < this.maxScrollY ) {
+			if ( newX > this.minScrollX || newX < this.maxScrollX || newY > this.minScrollY || newY < this.maxScrollY ) {
 				easing = utils.ease.quadratic;
 			}
 
@@ -340,14 +340,14 @@ IScroll.prototype = {
 
 		time = time || 0;
 
-		if ( !this.hasHorizontalScroll || this.x > 0 ) {
-			x = 0;
+		if ( !this.hasHorizontalScroll || this.x > this.minScrollX ) {
+			x = this.minScrollX;
 		} else if ( this.x < this.maxScrollX ) {
 			x = this.maxScrollX;
 		}
 
-		if ( !this.hasVerticalScroll || this.y > 0 ) {
-			y = 0;
+		if ( !this.hasVerticalScroll || this.y > this.minScrollY ) {
+			y = this.minScrollY;
 		} else if ( this.y < this.maxScrollY ) {
 			y = this.maxScrollY;
 		}
@@ -377,23 +377,31 @@ IScroll.prototype = {
 
 /* REPLACE START: refresh */
 
-		this.scrollerWidth	= this.scroller.offsetWidth;
-		this.scrollerHeight	= this.scroller.offsetHeight;
+if (this.options.customScrollBounds) {
+		this.scrollerWidth = this.minScrollX - this.maxScrollX;
+		this.scrollerHeight = this.minScrollY - this.maxScrollY;
+} else {
+		this.scrollerWidth = this.scroller.offsetWidth;
+		this.scrollerHeight = this.scroller.offsetHeight;
 
-		this.maxScrollX		= this.wrapperWidth - this.scrollerWidth;
-		this.maxScrollY		= this.wrapperHeight - this.scrollerHeight;
-
+		this.maxScrollX = this.wrapperWidth - this.scrollerWidth;
+		this.maxScrollY = this.wrapperHeight - this.scrollerHeight;
+		this.minScrollX = 0;
+		this.minScrollY = 0;
+}
 /* REPLACE END: refresh */
 
-		this.hasHorizontalScroll	= this.options.scrollX && this.maxScrollX < 0;
-		this.hasVerticalScroll		= this.options.scrollY && this.maxScrollY < 0;
+		this.hasHorizontalScroll	= this.options.scrollX && this.maxScrollX < this.minScrollX;
+		this.hasVerticalScroll		= this.options.scrollY && this.maxScrollY < this.minScrollY;
 
 		if ( !this.hasHorizontalScroll ) {
 			this.maxScrollX = 0;
+			this.minScrollX = 0;
 			this.scrollerWidth = this.wrapperWidth;
 		}
 
 		if ( !this.hasVerticalScroll ) {
+			this.minScrollY = 0;
 			this.maxScrollY = 0;
 			this.scrollerHeight = this.wrapperHeight;
 		}
@@ -494,8 +502,8 @@ IScroll.prototype = {
 		pos.left -= offsetX || 0;
 		pos.top  -= offsetY || 0;
 
-		pos.left = pos.left > 0 ? 0 : pos.left < this.maxScrollX ? this.maxScrollX : pos.left;
-		pos.top  = pos.top  > 0 ? 0 : pos.top  < this.maxScrollY ? this.maxScrollY : pos.top;
+		pos.left = pos.left > this.minScrollX ? this.minScrollX : pos.left < this.maxScrollX ? this.maxScrollX : pos.left;
+		pos.top  = pos.top  > this.minScrollY ? this.minScrollY : pos.top  < this.maxScrollY ? this.maxScrollY : pos.top;
 
 		time = time === undefined || time === null || time === 'auto' ? Math.max(Math.abs(this.x-pos.left), Math.abs(this.y-pos.top)) : time;
 
