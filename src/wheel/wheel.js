@@ -52,8 +52,10 @@
 		wheelDeltaY *= this.options.invertWheelDirection;
 
 		if ( !this.hasVerticalScroll ) {
-			wheelDeltaX = wheelDeltaY;
-			wheelDeltaY = 0;
+			if (Math.abs(wheelDeltaX) < Math.abs(wheelDeltaY)) {
+				wheelDeltaX = wheelDeltaY;
+				wheelDeltaY = 0;
+			}
 		}
 
 		if ( this.options.snap ) {
@@ -80,14 +82,14 @@
 		newX = this.x + Math.round(this.hasHorizontalScroll ? wheelDeltaX : 0);
 		newY = this.y + Math.round(this.hasVerticalScroll ? wheelDeltaY : 0);
 
-		if ( newX > 0 ) {
-			newX = 0;
+		if ( newX > this.minScrollX ) {
+			newX = this.minScrollX;
 		} else if ( newX < this.maxScrollX ) {
 			newX = this.maxScrollX;
 		}
 
-		if ( newY > 0 ) {
-			newY = 0;
+		if ( newY > this.minScrollY ) {
+			newY = this.minScrollY;
 		} else if ( newY < this.maxScrollY ) {
 			newY = this.maxScrollY;
 		}
