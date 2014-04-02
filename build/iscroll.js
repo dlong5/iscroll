@@ -760,7 +760,7 @@ if (this.options.customScrollBounds) {
 		}
 	},
 
-	scrollToElement: function (el, time, offsetX, offsetY, easing) {
+	scrollToElement: function (el, time, offsetX, offsetY, easing, offsetXFromCenter, offsetYFromCenter) {
 		el = el.nodeType ? el : this.scroller.querySelector(el);
 
 		if ( !el ) {
@@ -772,16 +772,19 @@ if (this.options.customScrollBounds) {
 		pos.left -= this.wrapperOffset.left;
 		pos.top  -= this.wrapperOffset.top;
 
-		// if offsetX/Y are true we center the element to the screen
-		if ( offsetX === true ) {
-			offsetX = Math.round(el.offsetWidth / 2 - this.wrapper.offsetWidth / 2);
+		offsetX = offsetX || 0;
+		offsetY = offsetY || 0;
+
+		// position from the center
+		if ( offsetXFromCenter === true ) {
+			offsetX += Math.round(el.offsetWidth / 2 - this.wrapper.offsetWidth / 2);
 		}
-		if ( offsetY === true ) {
-			offsetY = Math.round(el.offsetHeight / 2 - this.wrapper.offsetHeight / 2);
+		if ( offsetYFromCenter === true ) {
+			offsetY += Math.round(el.offsetHeight / 2 - this.wrapper.offsetHeight / 2);
 		}
 
-		pos.left -= offsetX || 0;
-		pos.top  -= offsetY || 0;
+		pos.left -= offsetX;
+		pos.top  -= offsetY;
 
 		pos.left = pos.left > this.minScrollX ? this.minScrollX : pos.left < this.maxScrollX ? this.maxScrollX : pos.left;
 		pos.top  = pos.top  > this.minScrollY ? this.minScrollY : pos.top  < this.maxScrollY ? this.maxScrollY : pos.top;
