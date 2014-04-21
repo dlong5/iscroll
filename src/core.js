@@ -479,15 +479,9 @@ if (this.options.customScrollBounds) {
 		}
 	},
 
-	scrollToElement: function (el, time, offsetX, offsetY, easing, offsetXFromCenter, offsetYFromCenter) {
-		el = el.nodeType ? el : this.scroller.querySelector(el);
+	scrollToExpectedElement: function (elPosLeft, elPosTop, elHalfWidth, elHalfHeight, time, offsetX, offsetY, easing, offsetXFromCenter, offsetYFromCenter) {
 
-		if ( !el ) {
-			return;
-		}
-
-		var pos = utils.offset(el);
-
+		var pos = {left: elPosLeft, top: elPosTop};
 		pos.left -= this.wrapperOffset.left;
 		pos.top  -= this.wrapperOffset.top;
 
@@ -496,10 +490,10 @@ if (this.options.customScrollBounds) {
 
 		// position from the center
 		if ( offsetXFromCenter === true ) {
-			offsetX += Math.round(el.offsetWidth / 2 - this.wrapper.offsetWidth / 2);
+			offsetX += Math.round(elHalfWidth - this.wrapper.offsetWidth / 2);
 		}
 		if ( offsetYFromCenter === true ) {
-			offsetY += Math.round(el.offsetHeight / 2 - this.wrapper.offsetHeight / 2);
+			offsetY += Math.round(elHalfHeight - this.wrapper.offsetHeight / 2);
 		}
 
 		pos.left -= offsetX;
@@ -511,6 +505,18 @@ if (this.options.customScrollBounds) {
 		time = time === undefined || time === null || time === 'auto' ? Math.max(Math.abs(this.x-pos.left), Math.abs(this.y-pos.top)) : time;
 
 		this.scrollTo(pos.left, pos.top, time, easing);
+	},
+
+	scrollToElement: function (el, time, offsetX, offsetY, easing, offsetXFromCenter, offsetYFromCenter) {
+		el = el.nodeType ? el : this.scroller.querySelector(el);
+
+		if ( !el ) {
+			return;
+		}
+
+		var pos = utils.offset(el);
+
+		this.scrollToExpectedElement(pos.left, pos.top, el.offsetWidth / 2, el.offsetHeight / 2, time, offsetX, offsetY, easing, offsetXFromCenter, offsetYFromCenter);
 	},
 
 	_transitionTime: function (time) {

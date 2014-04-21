@@ -9,6 +9,8 @@
 
 ***scroll to element(center with offset)*** offsetX/Y no longer accept true as a parameter. The new signature is scrollToElement(el, time, offsetX, offsetY, easing, offsetXFromCenter, offsetYFromCenter) where offset(X/Y)FromCenter is a boolean.
 
+***scroll to expected element*** we needed to implement a more performant solution for some lists and the built in infinite scrolling was not exactly what we needed. scrollToExpectedElement has been added to enable the ability to scroll to an item we know will be there when the scrolling has completed.
+
 <h1 id="intro">iScroll, smooth scrolling for the web</h1>
 
 iScroll is a high performance, small footprint, dependency free, multi-platform javascript scroller.
