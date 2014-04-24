@@ -4,8 +4,7 @@
 
 ***custom scroll bounds*** We need to be able to inject content into the beginning of the list and not lose our place as well as add padding to the beginning and end of the list. StartX and Y values were capped at 0 and didn't help. If you set customScrollBounds to true, you'll need to set minScrollX/Y and maxScrollX/Y and call refresh any time the values change.
 
-***horizontal scroll with both wheel directions*** Better to allow both wheel options for horizontal scrolling.
-
+***mouse wheel scroll event*** only horizontal scroll prevents event propagation when the intention detected is horizontal.
 
 ***scroll to element(center with offset)*** offsetX/Y no longer accept true as a parameter. The new signature is scrollToElement(el, time, offsetX, offsetY, easing, offsetXFromCenter, offsetYFromCenter) where offset(X/Y)FromCenter is a boolean.
 

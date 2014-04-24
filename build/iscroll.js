@@ -1042,9 +1042,6 @@ if (this.options.customScrollBounds) {
 			return;
 		}
 
-		e.preventDefault();
-		e.stopPropagation();
-
 		var wheelDeltaX, wheelDeltaY,
 			newX, newY,
 			that = this;
@@ -1074,15 +1071,14 @@ if (this.options.customScrollBounds) {
 			return;
 		}
 
+		if (this.hasHorizontalScroll && Math.abs(wheelDeltaX) > Math.abs(wheelDeltaY)) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+
+
 		wheelDeltaX *= this.options.invertWheelDirection;
 		wheelDeltaY *= this.options.invertWheelDirection;
-
-		if ( !this.hasVerticalScroll ) {
-			if (Math.abs(wheelDeltaX) < Math.abs(wheelDeltaY)) {
-				wheelDeltaX = wheelDeltaY;
-				wheelDeltaY = 0;
-			}
-		}
 
 		if ( this.options.snap ) {
 			newX = this.currentPage.pageX;
