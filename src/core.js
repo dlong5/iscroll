@@ -482,8 +482,6 @@ if (this.options.customScrollBounds) {
 	scrollToExpectedElement: function (elPosLeft, elPosTop, elHalfWidth, elHalfHeight, time, offsetX, offsetY, easing, offsetXFromCenter, offsetYFromCenter) {
 
 		var pos = {left: elPosLeft, top: elPosTop};
-		pos.left -= this.wrapperOffset.left;
-		pos.top  -= this.wrapperOffset.top;
 
 		offsetX = offsetX || 0;
 		offsetY = offsetY || 0;
@@ -503,7 +501,6 @@ if (this.options.customScrollBounds) {
 		pos.top  = pos.top  > this.minScrollY ? this.minScrollY : pos.top  < this.maxScrollY ? this.maxScrollY : pos.top;
 
 		time = time === undefined || time === null || time === 'auto' ? Math.max(Math.abs(this.x-pos.left), Math.abs(this.y-pos.top)) : time;
-
 		this.scrollTo(pos.left, pos.top, time, easing);
 	},
 
