@@ -21,15 +21,15 @@
 			that = this;
 
 		if ( this.wheelTimeout === undefined ) {
-			that._execEvent('scrollStart');
+			this._start_shared(0, 0);
+			this._execEvent('scrollStart');
 		}
-
 		// Execute the scrollEnd event after 400ms the wheel stopped scrolling
 		clearTimeout(this.wheelTimeout);
 		this.wheelTimeout = setTimeout(function () {
 			that._execEvent('scrollEnd');
 			that.wheelTimeout = undefined;
-		}, 400);
+		}, 200);
 
 		if ( 'deltaX' in e ) {
 			wheelDeltaX = -e.deltaX;

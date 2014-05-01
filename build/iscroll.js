@@ -381,10 +381,13 @@ IScroll.prototype = {
 			e.preventDefault();
 		}
 
-		var point = e.touches ? e.touches[0] : e,
-			pos;
+		var point = e.touches ? e.touches[0] : e;
 
 		this.initiated	= utils.eventType[e.type];
+		this._start_shared(point.pageX, point.pageY);
+	},
+
+	_start_shared: function (pointX, pointY) {
 		this.moved		= false;
 		this.distX		= 0;
 		this.distY		= 0;
@@ -398,7 +401,7 @@ IScroll.prototype = {
 
 		if ( this.options.useTransition && this.isInTransition ) {
 			this.isInTransition = false;
-			pos = this.getComputedPosition();
+			var pos = this.getComputedPosition();
 			this._translate(Math.round(pos.x), Math.round(pos.y));
 			this._execEvent('scrollEnd');
 		} else if ( !this.options.useTransition && this.isAnimating ) {
@@ -410,8 +413,8 @@ IScroll.prototype = {
 		this.startY    = this.y;
 		this.absStartX = this.x;
 		this.absStartY = this.y;
-		this.pointX    = point.pageX;
-		this.pointY    = point.pageY;
+		this.pointX    = pointX;
+		this.pointY    = pointY;
 
 		this._execEvent('beforeScrollStart');
 	},
@@ -494,6 +497,9 @@ IScroll.prototype = {
 		this.directionY = deltaY > 0 ? -1 : deltaY < 0 ? 1 : 0;
 
 		if ( !this.moved ) {
+			if (this.wheelTimeout !== undefined) {
+				clearTimeout(this.wheelTimeout); // fix so we don't get an invalid scrollEnd event if the timeout hasn't been cleared yet.
+			}
 			this._execEvent('scrollStart');
 		}
 
@@ -601,7 +607,6 @@ IScroll.prototype = {
 			this.scrollTo(newX, newY, time, easing);
 			return;
 		}
-
 		this._execEvent('scrollEnd');
 	},
 
@@ -1044,15 +1049,15 @@ if (this.options.customScrollBounds) {
 			that = this;
 
 		if ( this.wheelTimeout === undefined ) {
-			that._execEvent('scrollStart');
+			this._start_shared(0, 0);
+			this._execEvent('scrollStart');
 		}
-
 		// Execute the scrollEnd event after 400ms the wheel stopped scrolling
 		clearTimeout(this.wheelTimeout);
 		this.wheelTimeout = setTimeout(function () {
 			that._execEvent('scrollEnd');
 			that.wheelTimeout = undefined;
-		}, 400);
+		}, 200);
 
 		if ( 'deltaX' in e ) {
 			wheelDeltaX = -e.deltaX;
