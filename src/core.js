@@ -467,13 +467,35 @@ if (this.options.customScrollBounds) {
 		y = this.y + y;
 		time = time || 0;
 
+		if ( x > this.minScrollX ) {
+			x = this.minScrollX;
+		} else if ( x < this.maxScrollX ) {
+			x = this.maxScrollX;
+		}
+
+		if ( y > this.minScrollY ) {
+			y = this.minScrollY;
+		} else if ( y < this.maxScrollY ) {
+			y = this.maxScrollY;
+		}
+
+		if (!this.isAnimating) {
+			this._start_shared(0, 0);
+			this._execEvent('scrollStart');
+		}
+
 		this.scrollTo(x, y, time, easing);
+
+		if (!time) {
+			this._execEvent('scrollEnd');
+		}
 	},
 
 	scrollTo: function (x, y, time, easing) {
 		easing = easing || utils.ease.circular;
 
 		this.isInTransition = this.options.useTransition && time > 0;
+
 
 		if ( !time || (this.options.useTransition && easing.style) ) {
 			this._transitionTimingFunction(easing.style);

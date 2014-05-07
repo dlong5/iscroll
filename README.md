@@ -4,11 +4,16 @@
 
 ***custom scroll bounds*** We need to be able to inject content into the beginning of the list and not lose our place as well as add padding to the beginning and end of the list. StartX and Y values were capped at 0 and didn't help. If you set customScrollBounds to true, you'll need to set minScrollX/Y and maxScrollX/Y and call refresh any time the values change.
 
-***mouse wheel scroll event*** only horizontal scroll prevents event propagation when the intention detected is horizontal.
+***mouse wheel scroll event*** Only horizontal scroll prevents event propagation when the intention detected is horizontal.
 
-***scroll to element(center with offset)*** offsetX/Y no longer accept true as a parameter. The new signature is scrollToElement(el, time, offsetX, offsetY, easing, offsetXFromCenter, offsetYFromCenter) where offset(X/Y)FromCenter is a boolean.
+***scroll to element(center with offset)*** OffsetX/Y no longer accept true as a parameter. The new signature is scrollToElement(el, time, offsetX, offsetY, easing, offsetXFromCenter, offsetYFromCenter) where offset(X/Y)FromCenter is a boolean.
 
-***scroll to expected element*** we needed to implement a more performant solution for some lists and the built in infinite scrolling was not exactly what we needed. scrollToExpectedElement has been added to enable the ability to scroll to an item we know will be there when the scrolling has completed.
+***scroll to expected element*** We needed to implement a more performant solution for some lists and the built in infinite scrolling was not exactly what we needed. scrollToExpectedElement has been added to enable the ability to scroll to an item we know will be there when the scrolling has completed.
+
+***scroll by clamping and scroll start/end events*** We needed to clamp scroll by and have it notify when scrolling started and ended(ended if there was no time provided).
+
+***accumulating animated scroll*** The animated scroll needed to accumulate for paging so it felt more responsive.
+
 
 <h1 id="intro">iScroll, smooth scrolling for the web</h1>
 

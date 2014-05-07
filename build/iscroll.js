@@ -748,13 +748,35 @@ if (this.options.customScrollBounds) {
 		y = this.y + y;
 		time = time || 0;
 
+		if ( x > this.minScrollX ) {
+			x = this.minScrollX;
+		} else if ( x < this.maxScrollX ) {
+			x = this.maxScrollX;
+		}
+
+		if ( y > this.minScrollY ) {
+			y = this.minScrollY;
+		} else if ( y < this.maxScrollY ) {
+			y = this.maxScrollY;
+		}
+
+		if (!this.isAnimating) {
+			this._start_shared(0, 0);
+			this._execEvent('scrollStart');
+		}
+
 		this.scrollTo(x, y, time, easing);
+
+		if (!time) {
+			this._execEvent('scrollEnd');
+		}
 	},
 
 	scrollTo: function (x, y, time, easing) {
 		easing = easing || utils.ease.circular;
 
 		this.isInTransition = this.options.useTransition && time > 0;
+
 
 		if ( !time || (this.options.useTransition && easing.style) ) {
 			this._transitionTimingFunction(easing.style);
@@ -1497,17 +1519,20 @@ if (this.options.customScrollBounds) {
 		var that = this,
 			startX = this.x,
 			startY = this.y,
-			startTime = utils.getTime(),
-			destTime = startTime + duration;
+			startTime = utils.getTime();
+
+		this._animateDestX = destX;
+		this._animateDestY = destY;
+		this._animateDestTime = startTime + duration;
 
 		function step () {
 			var now = utils.getTime(),
 				newX, newY,
 				easing;
 
-			if ( now >= destTime ) {
+			if ( now >= that._animateDestTime) {
 				that.isAnimating = false;
-				that._translate(destX, destY);
+				that._translate(that._animateDestX, that._animateDestY);
 
 				if ( !that.resetPosition(that.options.bounceTime) ) {
 					that._execEvent('scrollEnd');
@@ -1516,10 +1541,10 @@ if (this.options.customScrollBounds) {
 				return;
 			}
 
-			now = ( now - startTime ) / duration;
+			now = ( now - startTime ) / (that._animateDestTime - startTime);
 			easing = easingFn(now);
-			newX = ( destX - startX ) * easing + startX;
-			newY = ( destY - startY ) * easing + startY;
+			newX = ( that._animateDestX - startX ) * easing + startX;
+			newY = ( that._animateDestY - startY ) * easing + startY;
 			that._translate(newX, newY);
 
 			if ( that.isAnimating ) {
