@@ -680,6 +680,17 @@ if (this.options.customScrollBounds) {
 		this.hasHorizontalScroll	= this.options.scrollX && this.maxScrollX < this.minScrollX;
 		this.hasVerticalScroll		= this.options.scrollY && this.maxScrollY < this.minScrollY;
 
+if (this.options.customScrollBounds) {
+		if ( !this.hasHorizontalScroll ) {
+			this.maxScrollX = this.minScrollX;
+			this.scrollerWidth = this.wrapperWidth;
+		}
+
+		if ( !this.hasVerticalScroll ) {
+			this.maxScrollY = this.minScrollY;
+			this.scrollerHeight = this.wrapperHeight;
+		}
+} else {
 		if ( !this.hasHorizontalScroll ) {
 			this.maxScrollX = 0;
 			this.minScrollX = 0;
@@ -691,6 +702,7 @@ if (this.options.customScrollBounds) {
 			this.maxScrollY = 0;
 			this.scrollerHeight = this.wrapperHeight;
 		}
+}
 
 		this.endTime = 0;
 		this.directionX = 0;
